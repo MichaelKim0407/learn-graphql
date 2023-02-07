@@ -9,3 +9,12 @@ services:
       - ./backend:/backend
     working_dir: /backend
     command: npm start
+
+  frontend:
+    image: node:18
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./frontend:/frontend
+    working_dir: /frontend
+    command: yarn start
