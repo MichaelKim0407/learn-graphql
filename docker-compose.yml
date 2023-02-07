@@ -7,8 +7,12 @@ services:
       - '4000:4000'
     volumes:
       - ./backend:/backend
+      - npm-cache:/root/.npm
+      - yarn-cache:/root/.yarn
+    environment:
+      YARN_CACHE_FOLDER: /root/.yarn
     working_dir: /backend
-    command: npm start
+    command: yarn start
 
   frontend:
     image: node:18
@@ -16,5 +20,13 @@ services:
       - '3000:3000'
     volumes:
       - ./frontend:/frontend
+      - npm-cache:/root/.npm
+      - yarn-cache:/root/.yarn
+    environment:
+      YARN_CACHE_FOLDER: /root/.yarn
     working_dir: /frontend
     command: yarn start
+
+volumes:
+  npm-cache:
+  yarn-cache:
