@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  backend:
+    image: node:18
+    ports:
+      - '4000:4000'
+    volumes:
+      - ./backend:/backend
+      - npm-cache:/root/.npm
+      - yarn-cache:/root/.yarn
+    environment:
+      YARN_CACHE_FOLDER: /root/.yarn
+    working_dir: /backend
+    command: yarn start
+
+volumes:
+  npm-cache:
+  yarn-cache:

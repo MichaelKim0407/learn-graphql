@@ -6,12 +6,12 @@ services:
     ports:
       - '4000:4000'
     volumes:
-      - ./backend:/backend
+      - ./backend2:/backend2
       - npm-cache:/root/.npm
       - yarn-cache:/root/.yarn
     environment:
       YARN_CACHE_FOLDER: /root/.yarn
-    working_dir: /backend
+    working_dir: /backend2
     command: yarn start
 
   frontend:
