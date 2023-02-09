@@ -2,15 +2,15 @@ function info() {
     return `This is the API of a Hackernews Clone`;
 }
 
-function feed(root, {}, context) {
-    return context.prisma.link.findMany();
+function feed(root, {}, {prisma}) {
+    return prisma.link.findMany();
 }
 
-function link(root, {id}, context) {
+function link(root, {id}, {prisma}) {
     id = parseInt(id);
-    return context.prisma.link.findUnique({
+    return prisma.link.findUnique({
         where: {
-            id: id,
+            id,
         },
     });
 }

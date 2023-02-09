@@ -2,9 +2,7 @@ const {handleError} = require('../utils/prisma');
 const {getJwtToken} = require('../utils/auth');
 const passwords = require('../utils/passwords');
 
-async function post(root, {url, description}, context) {
-    const {userId} = context;
-
+async function post(root, {url, description}, {prisma, userId}) {
     let data = {
         url,
         description,
@@ -13,38 +11,48 @@ async function post(root, {url, description}, context) {
         data['postedBy'] = {connect: {id: userId}};
     }
 
-    return context.prisma.link.create({
+    return prisma.link.create({
         data,
     });
 }
 
-function updateLink(root, {id, url, description}, context) {
-    id = parseInt(id);
+function updateLink(root, {id, url, description}, {prisma}) {
     let data = {};
     if (url != null)
         data.url = url;
     if (description != null)
         data.description = description;
-    return context.prisma.link.update({
-        data: data,
-        where: {
-            id: id,
-        },
-    }).catch(handleError);
-}
 
-function deleteLink(root, {id}, context) {
     id = parseInt(id);
-    return context.prisma.link.delete({
-        where: {
-            id: id,
-        },
-    }).catch(handleError);
+    return prisma.link
+        .update({
+            data,
+            where: {
+                id,
+            },
+        })
+        .catch(handleError);
 }
 
-async function signup(root, args, context) {
-    const password = await passwords.encrypt(args.password);
-    const user = await context.prisma.user.create({data: {...args, password}});
+function deleteLink(root, {id}, {prisma}) {
+    id = parseInt(id);
+    return prisma.link
+        .delete({
+            where: {
+                id,
+            },
+        })
+        .catch(handleError);
+}
+
+async function signup(root, {password, ...args}, {prisma}) {
+    const encrypted = await passwords.encrypt(password);
+    const user = await prisma.user.create({
+        data: {
+            password: encrypted,
+            ...args,
+        },
+    });
     const token = getJwtToken(user.id);
     return {
         token,
@@ -52,8 +60,8 @@ async function signup(root, args, context) {
     };
 }
 
-async function validateLogin(email, password, context) {
-    const user = await context.prisma.user.findUnique({where: {email: email}});
+async function validateLogin(email, password, prisma) {
+    const user = await prisma.user.findUnique({where: {email: email}});
     if (!user) {
         return null;
     }
@@ -63,8 +71,8 @@ async function validateLogin(email, password, context) {
     return user;
 }
 
-async function login(root, {email, password}, context) {
-    const user = await validateLogin(email, password, context);
+async function login(root, {email, password}, {prisma}) {
+    const user = await validateLogin(email, password, prisma);
     if (!user) {
         throw new Error('Wrong username or password');
     }

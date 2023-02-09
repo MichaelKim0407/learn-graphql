@@ -1,5 +1,11 @@
-function links(user, args, context) {
-    return context.prisma.user.findUnique({where: {id: user.id}}).links();
+function links(user, {}, {prisma}) {
+    return prisma.user
+        .findUnique({
+            where: {
+                id: user.id,
+            },
+        })
+        .links();
 }
 
 module.exports = {
