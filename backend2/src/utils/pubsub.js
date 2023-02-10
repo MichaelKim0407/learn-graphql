@@ -1,5 +1,4 @@
-const newLinkSubscriptionChannel = 'NEW_LINK';
-
 module.exports = {
-    newLinkSubscriptionChannel,
+    newLinkSubscriptionChannel: 'NEW_LINK',
+    newVoteSubscriptionChannel: 'NEW_VOTE',
 };

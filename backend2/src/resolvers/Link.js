@@ -8,6 +8,17 @@ function postedBy(link, {}, {prisma}) {
         .postedBy();
 }
 
+function votes(link, {}, {prisma}) {
+    return prisma.link
+        .findUnique({
+            where: {
+                id: link.id,
+            },
+        })
+        .votes();
+}
+
 module.exports = {
     postedBy,
+    votes,
 };

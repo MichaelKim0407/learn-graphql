@@ -3,6 +3,7 @@ const Mutation = require('./Mutation');
 const Subscription = require('./Subscription');
 const Link = require('./Link');
 const User = require('./User');
+const Vote = require('./Vote');
 
 module.exports = {
     Query,
@@ -10,4 +11,5 @@ module.exports = {
     Subscription,
     Link,
     User,
+    Vote,
 };

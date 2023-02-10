@@ -1,14 +1,17 @@
-const {newLinkSubscriptionChannel} = require('../utils/pubsub');
+const {newLinkSubscriptionChannel, newVoteSubscriptionChannel} = require('../utils/pubsub');
 
-function newLinkSubscribe(root, {}, {pubsub}) {
-    return pubsub.asyncIterator(newLinkSubscriptionChannel);
+function getSubscribeFunction(channelName) {
+    return (root, {}, {pubsub}) => pubsub.asyncIterator(channelName);
 }
 
-const newLink = {
-    subscribe: newLinkSubscribe,
-    resolve: payload => payload,
-};
+function getSubscription(channelName) {
+    return {
+        subscribe: getSubscribeFunction(channelName),
+        resolve: payload => payload,
+    };
+}
 
 module.exports = {
-    newLink,
+    newLink: getSubscription(newLinkSubscriptionChannel),
+    newVote: getSubscription(newVoteSubscriptionChannel),
 };

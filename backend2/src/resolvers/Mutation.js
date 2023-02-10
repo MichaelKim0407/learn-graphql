@@ -1,7 +1,7 @@
 const {handleError} = require('../utils/prisma');
 const {getJwtToken} = require('../utils/auth');
 const passwords = require('../utils/passwords');
-const {newLinkSubscriptionChannel} = require('../utils/pubsub');
+const {newLinkSubscriptionChannel, newVoteSubscriptionChannel} = require('../utils/pubsub');
 
 async function post(root, {url, description}, {prisma, pubsub, userId}) {
     let data = {
@@ -87,6 +87,32 @@ async function login(root, {email, password}, {prisma}) {
     };
 }
 
+async function vote(root, {linkId}, {prisma, pubsub, userId}) {
+    linkId = parseInt(linkId);
+
+    const vote = await prisma.vote.findUnique({
+        where: {
+            linkId_userId: {
+                linkId: linkId,
+                userId: userId,
+            },
+        },
+    });
+
+    if (vote) {
+        throw new Error(`Already voted for link: ${linkId}`);
+    }
+
+    const newVote = await prisma.vote.create({
+        data: {
+            user: {connect: {id: userId}},
+            link: {connect: {id: linkId}},
+        },
+    });
+    pubsub.publish(newVoteSubscriptionChannel, newVote);
+    return newVote;
+}
+
 module.exports = {
     post,
     updateLink,
@@ -94,4 +120,6 @@ module.exports = {
 
     signup,
     login,
+
+    vote,
 };
