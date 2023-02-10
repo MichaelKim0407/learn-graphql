@@ -1,8 +1,9 @@
 const {handleError} = require('../utils/prisma');
 const {getJwtToken} = require('../utils/auth');
 const passwords = require('../utils/passwords');
+const {newLinkSubscriptionChannel} = require('../utils/pubsub');
 
-async function post(root, {url, description}, {prisma, userId}) {
+async function post(root, {url, description}, {prisma, pubsub, userId}) {
     let data = {
         url,
         description,
@@ -11,9 +12,11 @@ async function post(root, {url, description}, {prisma, userId}) {
         data['postedBy'] = {connect: {id: userId}};
     }
 
-    return prisma.link.create({
+    const link = await prisma.link.create({
         data,
     });
+    pubsub.publish(newLinkSubscriptionChannel, link);
+    return link;
 }
 
 function updateLink(root, {id, url, description}, {prisma}) {
