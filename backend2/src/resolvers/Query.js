@@ -2,7 +2,8 @@ function info() {
     return `This is the API of a Hackernews Clone`;
 }
 
-function feed(root, {filter, skip, take, orderBy}, {prisma}) {
+function feed(root, args, {prisma}) {
+    const {filter, skip, take, orderBy} = args;
     const where = filter
         ? {
             OR: [
@@ -23,6 +24,7 @@ function feed(root, {filter, skip, take, orderBy}, {prisma}) {
             where,
         });
     return {
+        id: `main-feed:${JSON.stringify(args)}`,
         links,
         count,
     };
