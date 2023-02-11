@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {gql, useMutation} from "@apollo/client";
-import {AUTH_TOKEN} from "../constants";
+import {setAuthToken} from "../utils/auth";
 
 const SIGNUP_MUTATION = gql`
     mutation SignupMutation(
@@ -46,7 +46,7 @@ const Login = () => {
             password: formState.password,
         },
         onCompleted: ({login}) => {
-            localStorage.setItem(AUTH_TOKEN, login.token);
+            setAuthToken(login.token);
             navigate('/');
         },
     });
@@ -58,7 +58,7 @@ const Login = () => {
             password: formState.password,
         },
         onCompleted: ({signup}) => {
-            localStorage.setItem(AUTH_TOKEN, signup.token);
+            setAuthToken(signup.token);
             navigate('/');
         },
     });

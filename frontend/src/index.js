@@ -6,18 +6,18 @@ import reportWebVitals from './reportWebVitals';
 import {ApolloClient, ApolloProvider, createHttpLink, InMemoryCache} from '@apollo/client';
 import {BrowserRouter} from 'react-router-dom';
 import {setContext} from "@apollo/client/link/context";
-import {AUTH_TOKEN} from "./constants";
+import {getAuthToken} from "./utils/auth";
 
 const httpLink = createHttpLink({
     uri: 'http://localhost:4000',
 });
 
 const authLink = setContext((_, {headers}) => {
-    const token = localStorage.getItem(AUTH_TOKEN);
+    const authToken = getAuthToken();
     return {
         headers: {
             ...headers,
-            authorization: token ? `Bearer ${token}` : '',
+            authorization: authToken ? `Bearer ${authToken}` : '',
         },
     };
 });
