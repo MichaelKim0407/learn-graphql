@@ -24,6 +24,8 @@ services:
       - yarn-cache:/root/.yarn
     environment:
       YARN_CACHE_FOLDER: /root/.yarn
+      #CHOKIDAR_USEPOLLING: 'true'
+      WATCHPACK_POLLING: 'true'
     working_dir: /frontend
     command: yarn start
 
