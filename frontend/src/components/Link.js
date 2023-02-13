@@ -34,6 +34,10 @@ const Link = (props) => {
             linkId: link.id,
         },
         update: (cache, {data: {vote}}) => {
+            /* TODO bug with search
+             * 1. It does not work if FEED_QUERY has not been executed yet
+             * 2. 2 votes are added (visually) when vote is clicked
+             */
             const {feed} = cache.readQuery({
                 query: FEED_QUERY,
             });
