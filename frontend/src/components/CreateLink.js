@@ -13,6 +13,16 @@ const CREATE_LINK_MUTATION = gql`
             createdAt
             url
             description
+            postedBy {
+                id
+                name
+            }
+            votes {
+                id
+                user {
+                    id
+                }
+            }
         }
     }
 `;
@@ -34,6 +44,10 @@ const CreateLink = () => {
             const data = cache.readQuery({
                 query: FEED_QUERY,
             });
+
+            if (!data) {
+                return;
+            }
 
             cache.writeQuery({
                 query: FEED_QUERY,

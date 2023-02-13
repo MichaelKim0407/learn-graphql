@@ -2,13 +2,12 @@ import React from 'react';
 import {getAuthToken} from "../utils/auth";
 import {timeDifferenceForDate} from "../utils/time";
 import {gql, useMutation} from "@apollo/client";
-import {FEED_QUERY} from "./LinkList";
 
 const VOTE_MUTATION = gql`
     mutation VoteMutation($linkId: ID!) {
         vote(linkId: $linkId) {
             id
-            link {
+            link {   # <--- important to have this section so that useMutation automagically updates the cache
                 id
                 votes {
                     id
@@ -33,34 +32,11 @@ const Link = (props) => {
         variables: {
             linkId: link.id,
         },
-        update: (cache, {data: {vote}}) => {
-            /* TODO bug with search
-             * 1. It does not work if FEED_QUERY has not been executed yet
-             * 2. 2 votes are added (visually) when vote is clicked
-             */
-            const {feed} = cache.readQuery({
-                query: FEED_QUERY,
-            });
-
-            const updatedLinks = feed.links.map((feedLink) => {
-                if (feedLink.id === link.id) {
-                    return {
-                        ...feedLink,
-                        votes: [...feedLink.votes, vote],
-                    };
-                }
-                return feedLink;
-            });
-
-            cache.writeQuery({
-                query: FEED_QUERY,
-                data: {
-                    feed: {
-                        links: updatedLinks,
-                    },
-                },
-            });
-        },
+        /* NOTE:
+         * We don't need to update cache here
+         * because useMutation already attempts to update the cache by looking at the id.
+         * See comment in VOTE_MUTATION.
+         */
     });
 
     return (
