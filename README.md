@@ -9,3 +9,6 @@ To run it, use `docker-compose-backend.yml`.
 `frontend` is a React frontend made following [this tutorial for React + Apollo client frontend](https://www.howtographql.com/react-apollo/0-introduction/).
 
 `backend2` and `frontend` are accompanying tutorials.
+
+`django` is an API server made following [this tutorial for Python + Django + Graphene](https://www.howtographql.com/graphql-python/0-introduction/).
+To run it use `docker-compose-django.yml`.

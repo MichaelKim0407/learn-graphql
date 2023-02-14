@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: ./django
+      dockerfile: dev.dockerfile
+    ports:
+      - '8000:8000'
+    volumes:
+      - ./django:/django
+    working_dir: /django
+    command: bash
+
+  lock:
+    profiles:
+      - lock
+    build:
+      context: ./django
+      dockerfile: lock.dockerfile
+    volumes:
+      - ./django:/django
+    working_dir: /django
+    command: pip-compile requirements.in
